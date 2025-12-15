@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LinkedIn Sales Intel</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+  <!-- Loading State -->
+  <div id="loadingState" class="loading-container">
+    <div class="loading-header">
+      <div class="loading-icon">
+        <span>🎯</span>
+      </div>
+      <h2 class="loading-title">Analyzing Profile with AI</h2>
+      <p class="loading-text" id="progressText">Initializing...</p>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progressBar" style="width: 0%">
+        <span id="progressBarText" style="color: white; font-size: 11px; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.3); position: relative; z-index: 1;"></span>
+      </div>
+    </div>
+    <div class="progress-percentage">
+      <div class="progress-percentage-value" id="progressPercentage">0%</div>
+      <div class="progress-percentage-label">Complete</div>
+    </div>
+    <div class="loading-info">
+      <div class="loading-info-title">What we're analyzing:</div>
+      <div class="loading-info-list">
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Profile information & experience</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>DISC personality assessment</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Communication style & preferences</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Sales approach & insights</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Key insights & pain points</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Best approach & ideal pitch</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Social engagement patterns</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Professional background & skills</span>
+        </div>
+        <div class="loading-info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>Do's & don'ts for engagement</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div id="errorState" class="error-container">
+    <h3 class="error-title">❌ Error</h3>
+    <p class="error-message" id="errorMessage"></p>
+    <button class="error-button" id="retryButton">Retry</button>
+  </div>
+
+  <!-- Not On Profile State -->
+  <div id="notOnProfileState" class="not-on-profile-container">
+    <button class="refresh-button-top" id="refreshButtonTop" title="Refresh">🔄</button>
+    <div class="not-on-profile-icon">
+      <span>🔍</span>
+    </div>
+    <h2 style="font-size: 20px; font-weight: 600; color: #0a66c2; margin-bottom: 10px; letter-spacing: -0.2px;">Navigate to a LinkedIn Profile</h2>
+    <p style="font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 24px;">To analyze a LinkedIn profile, please navigate to any LinkedIn profile page first.</p>
+    <div style="background: #f8f9fa; border-radius: 6px; padding: 16px; margin-bottom: 20px; text-align: left;">
+      <h3 style="font-size: 14px; font-weight: 600; color: #0a66c2; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 16px;">📋</span> How to get started:
+      </h3>
+      <ol style="margin: 0; padding-left: 18px; font-size: 13px; color: #333; line-height: 1.7;">
+        <li style="margin-bottom: 6px;">Go to <strong>linkedin.com</strong> in your browser</li>
+        <li style="margin-bottom: 6px;">Search for a person or navigate to any profile</li>
+        <li style="margin-bottom: 6px;">Make sure the URL contains <code style="background: #e8e8e8; padding: 2px 5px; border-radius: 3px; font-size: 11px; font-family: monospace;">/in/</code></li>
+        <li>Click the extension icon again to analyze</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Analysis Content -->
+  <div id="analysisContent" class="container">
+    <!-- Header with Burger Menu -->
+    <div class="header-card">
+      <div class="header-content">
+        <h1>🎯 Sales Intelligence</h1>
+        <div class="header-actions">
+          <button class="header-action-button" id="refreshButton">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+          </button>
+          <button class="header-action-button" id="saveButton">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+          </button>
+          <button class="burger-menu-button" id="burgerMenuButton" aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content View -->
+    <div id="mainContentView" class="content-view">
+
+      <!-- Primary Type -->
+      <div class="primary-type">
+        <h2 id="primaryType">Unknown</h2>
+        <div class="description" id="typeDescription">No description available</div>
+        <div class="confidence">Confidence: <span id="confidenceScore">0</span>%</div>
+      </div>
+
+    <!-- Burger Menu Overlay -->
+    <div class="burger-menu-overlay" id="burgerMenuOverlay">
+      <div class="burger-menu-content">
+        <div class="burger-menu-header">
+          <h3>Navigation</h3>
+          <button class="burger-menu-close" id="burgerMenuClose" aria-label="Close menu">×</button>
+        </div>
+        <div class="burger-menu-nav" id="burgerMenuNav"></div>
+      </div>
+    </div>
+        
+    <!-- DISC Personality -->
+    <div class="card" id="disc-personality">
+      <h2>📊 DISC Personality</h2>
+        <div class="disc-bar">
+          <div class="disc-label">
+            <span>Dominance</span>
+          <span class="disc-value" id="domValue">0%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" id="domBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="disc-bar">
+          <div class="disc-label">
+            <span>Influence</span>
+          <span class="disc-value" id="infValue">0%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" id="infBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="disc-bar">
+          <div class="disc-label">
+            <span>Steadiness</span>
+          <span class="disc-value" id="steValue">0%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" id="steBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="disc-bar">
+          <div class="disc-label">
+            <span>Compliance</span>
+          <span class="disc-value" id="comValue">0%</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" id="comBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Key Insights -->
+    <div class="card collapsible-card collapsed" id="key-insights">
+      <div class="card-header">
+        <h2>💡 Key Insights</h2>
+        <button class="collapse-button" data-target="key-insights-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="key-insights-content">
+        <ul class="insights-list" id="keyInsightsList"></ul>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="card collapsible-card collapsed" id="pain-points">
+      <div class="card-header">
+        <h2>⚠️ Pain Points</h2>
+        <button class="collapse-button" data-target="pain-points-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="pain-points-content">
+        <ul class="insights-list pain-points" id="painPointsList"></ul>
+      </div>
+    </div>
+
+    <!-- Communication Style -->
+    <div class="card collapsible-card collapsed" id="communication-style">
+      <div class="card-header">
+        <h2>🗣️ Communication Style</h2>
+        <button class="collapse-button" data-target="communication-style-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="communication-style-content">
+        <div class="insight-box" id="communicationStyle"></div>
+      </div>
+    </div>
+
+    <!-- Sales Approach -->
+    <div class="card collapsible-card collapsed" id="sales-approach">
+      <div class="card-header">
+        <h2>🎯 Sales Approach</h2>
+        <button class="collapse-button" data-target="sales-approach-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="sales-approach-content">
+        <div class="insight-box" id="salesApproach"></div>
+      </div>
+    </div>
+
+    <!-- Best Approach -->
+    <div class="card collapsible-card collapsed" id="best-approach">
+      <div class="card-header">
+        <h2>🎬 Best Approach</h2>
+        <button class="collapse-button" data-target="best-approach-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="best-approach-content">
+        <div class="insight-box" id="bestApproach"></div>
+      </div>
+    </div>
+
+    <!-- Ideal Pitch -->
+    <div class="card collapsible-card collapsed" id="ideal-pitch">
+      <div class="card-header">
+        <h2>💬 Ideal Pitch</h2>
+        <button class="collapse-button" data-target="ideal-pitch-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="ideal-pitch-content">
+        <div class="insight-box" id="idealPitch"></div>
+      </div>
+    </div>
+
+    <!-- Do & Avoid -->
+    <div class="card collapsible-card collapsed" id="do-avoid">
+      <div class="card-header">
+        <h2>✅ Do & Avoid</h2>
+        <button class="collapse-button" data-target="do-avoid-content" aria-label="Expand">
+          <svg class="collapse-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="card-content" id="do-avoid-content">
+        <h3>✅ DO:</h3>
+        <ul class="insights-list do-list" id="doList"></ul>
+        <h3 style="margin-top: 12px;">❌ AVOID:</h3>
+        <ul class="insights-list dont-list" id="dontList"></ul>
+      </div>
+    </div>
+    </div>
+
+    <!-- Message Views (Hidden by default) -->
+    <!-- Email Template View -->
+    <div id="emailTemplateView" class="content-view message-view" style="display: none;">
+      <div class="card" id="email-template">
+      <div class="message-section-header">
+        <div class="message-section-title">
+          <span style="font-size: 16px;">📧</span>
+          <h2>Email Template</h2>
+        </div>
+        <div class="message-section-actions">
+          <button class="icon-button close" id="emailCloseButton" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <div id="emailActions" style="display: none;">
+            <button class="icon-button clear" id="emailClearButton" title="Clear">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <button class="icon-button copy" id="emailCopyButton" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <label class="message-input-label">Your Request</label>
+      <textarea class="message-textarea" id="emailQuery" rows="2" placeholder="e.g., I want to send an email to connect with this person and introduce my product..."></textarea>
+      <button class="generate-button" id="emailGenerateButton">
+        <span class="spinner-small" id="emailSpinner" style="display: none;"></span>
+        <span id="emailGenerateText">Generate Email</span>
+      </button>
+      <div class="message-output" id="emailOutput" style="display: none;">
+        <div class="email-subject">
+          <div class="email-subject-label">
+            <span>Subject</span>
+            <div></div>
+          </div>
+          <div class="email-subject-content" id="emailSubject"></div>
+        </div>
+        <div>
+          <div class="email-body-label">
+            <span>Body</span>
+            <div></div>
+          </div>
+          <div class="email-body-content" id="emailBody"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- LinkedIn Message View -->
+    <div id="linkedinMessageView" class="content-view message-view" style="display: none;">
+      <div class="card" id="linkedin-message">
+      <div class="message-section-header">
+        <div class="message-section-title">
+          <span style="font-size: 16px;">💼</span>
+          <h2>LinkedIn Message</h2>
+        </div>
+        <div class="message-section-actions">
+          <button class="icon-button close" id="linkedinCloseButton" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <div id="linkedinActions" style="display: none;">
+            <button class="icon-button clear" id="linkedinClearButton" title="Clear">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <button class="icon-button copy" id="linkedinCopyButton" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <label class="message-input-label">Your Request</label>
+      <textarea class="message-textarea" id="linkedinQuery" rows="2" placeholder="e.g., I want to send a LinkedIn message..."></textarea>
+      <button class="generate-button" id="linkedinGenerateButton">
+        <span class="spinner-small" id="linkedinSpinner" style="display: none;"></span>
+        <span id="linkedinGenerateText">Generate Message</span>
+      </button>
+      <div class="message-output" id="linkedinOutput" style="display: none;">
+        <div class="message-output-label">Generated Message</div>
+        <div class="message-output-content" id="linkedinMessage"></div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Follow-up Message View -->
+    <div id="followupMessageView" class="content-view message-view" style="display: none;">
+      <div class="card" id="follow-up-message">
+      <div class="message-section-header">
+        <div class="message-section-title">
+          <span style="font-size: 16px;">🔄</span>
+          <h2>Follow-up Message</h2>
+        </div>
+        <div class="message-section-actions">
+          <button class="icon-button close" id="followupCloseButton" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <div id="followupActions" style="display: none;">
+            <button class="icon-button clear" id="followupClearButton" title="Clear">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <button class="icon-button copy" id="followupCopyButton" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <label class="message-input-label">Your Request</label>
+      <textarea class="message-textarea" id="followupQuery" rows="2" placeholder="e.g., I want to send a follow-up message..."></textarea>
+      <button class="generate-button" id="followupGenerateButton">
+        <span class="spinner-small" id="followupSpinner" style="display: none;"></span>
+        <span id="followupGenerateText">Generate Message</span>
+      </button>
+      <div class="message-output" id="followupOutput" style="display: none;">
+        <div class="message-output-label">Generated Message</div>
+        <div class="message-output-content" id="followupMessage"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>
